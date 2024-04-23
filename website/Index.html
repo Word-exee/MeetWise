@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meetup Location Recommender</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Meetup Location Recommender</h1>
+        <form id="locationForm">
+            <div class="input-group">
+                <label for="numFriends">Number of Friends:</label>
+                <input type="number" id="numFriends" name="numFriends" min="2" required>
+            </div>
+            <div id="friendsLocations"></div>
+            <div class="input-group">
+                <label for="meetingType">Type of Place:</label>
+                <select id="meetingType" name="meetingType">
+                    <option value="cafe">Cafe</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="park">Park</option>
+                    
+                </select>
+            </div>
+            <button type="submit">Recommend Location</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
