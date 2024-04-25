@@ -9,25 +9,21 @@
 <body>
     <div class="container">
         <h1>Meetup Location Recommender</h1>
-        <form id="locationForm">
-            <div class="input-group">
-                <label for="numFriends">Number of Friends:</label>
-                <input type="number" id="numFriends" name="numFriends" min="2" required>
-            </div>
-            <div id="friendsLocations"></div>
+        <form id="locationForm",action="{{ url_for('predict')}}"method="post">
+            
+            <input type="text" name="Location1" placeholder="Location1" required="required" />
+            <input type="text" name="Location2" placeholder="Location2" required="required" />
+            <input type="text" name="Location3" placeholder="Location3" required="required" />
             <div class="input-group">
                 <label for="meetingType">Type of Place:</label>
-                <select id="meetingType" name="meetingType">
-                    <option value="cafe">Cafe</option>
-                    <option value="restaurant">Restaurant</option>
-                    <option value="park">Park</option>
-                    
-                </select>
+                <input id="meetingType" name="meetingType">
             </div>
             <button type="submit">Recommend Location</button>
         </form>
-        <div id="result"></div>
+        <div id="result">
+            {{ prediction_text }}
+        </div>
     </div>
-    <script src="script.js"></script>
+
 </body>
 </html>
