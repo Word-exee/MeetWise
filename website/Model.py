@@ -11,8 +11,6 @@ from mpl_toolkits.basemap import Basemap
 import os.path
 import joblib
 from joblib import memory
-from hmmlearn import hmm
-import pandas as pd
 import pickle
 # supress warnings
 import warnings 
