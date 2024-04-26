@@ -1,5 +1,9 @@
 import numpy as np 
 from flask import Flask,request,jsonify,render_template
+from sqlalchemy  import create_engine, ForeignKey,Column,String, Integer, CHAR
+from sqlalchemy_utils import ScalarListType
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 import pickle
 import numpy as np
 import pprint
@@ -7,6 +11,38 @@ import time
 import csv
 import pandas as pd
 import json,requests
+from sqlalchemy  import create_engine, ForeignKey,Column,String, String, CHAR,ARRAY,Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+Base=declarative_base()
+class Person(Base):
+    #defining basic structure of table
+    __tablename__="Database"
+    name    =Column("name",String,primary_key=True)
+    vicinity=Column("Vicinity",String)
+    Type    =Column("Type",String)
+    latitude=Column("Latitude",String)
+    longitude=Column("Longitude",String)
+    rating=Column("rating",String)
+    reviews=Column("reviews",String)
+    place_id=Column("place_id",String)
+    sentiment=Column("Sentiment",String)
+    #defining the basic structure of a classs
+    def __init__(self,name,vicinity,Type,latitude,longitude,rating,reviews,place_id,sentiment):
+        self.name=name
+        self.vicinity=vicinity
+        self.Type=Type
+        self.latitude=latitude
+        self.longitude=longitude
+        self.rating=rating
+        self.reviews=reviews
+        self.place_id=place_id
+        self.sentiment=sentiment
+    def __repr__(self): #reprint function 
+        return f"({self.name})({self.vicinity})({self.Type})({self.latitude})({self.longitude})({self.rating})({self.reviews})({self.place_id})({self.sentiment})"
+engine=create_engine("sqlite:///mydb.db",echo=True)
+Base.metadata.create_all(bind=engine)#takes all the class and put them  in seperate tables in a single database
+Session = sessionmaker(bind=engine)
 # Declaring API Keys Use
 # Declaring Global Variables Used
 places_api_web_service =  'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork'
@@ -57,65 +93,77 @@ def predict():
         response = requests.get(reverse_geocode_url)
         data = response.json().get("results",{})
     if len(data) > 0:
-            resp_address = data
-            name = []
-            types = []
-            rating=[]
-            lat=[]
-            lng=[]
-            rating=[]
-            place_id_array=[]
-            vicinity=[]
-            review=[]
-            for i in range (0, len(resp_address)):
-                place_idd=resp_address[i]['place_id']
-                params = {
-                "place_id": place_idd,
-                "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
-                "fields": "reviews"  # Request specific fields to minimize data usage
-                }
-                base_url = "https://maps.googleapis.com/maps/api/place/details/json"
-                response = requests.get(base_url, params=params)
-                place_details = response.json().get("result", {})
+        resp_address = data
+        name = []
+        types = []
+        rating=[]
+        lat=[]
+        lng=[]
+        rating=[]
+        place_id_array=[]
+        vicinity=[]
+        review=[]
+        Sentiment=[]
+        for i in range (0, len(resp_address)):
+            place_idd=resp_address[i]['place_id']
+            params = {
+            "place_id": place_idd,
+            "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
+            "fields": "reviews"  # Request specific fields to minimize data usage
+            }
+            base_url = "https://maps.googleapis.com/maps/api/place/details/json"
+            response = requests.get(base_url, params=params)
+            place_details = response.json().get("result", {})
+            rat = place_details.get("rating",[])
+            rating.append(rat)
+            
+            count=0
+            rev=place_details.get("reviews", [])
+            revrat=[]
+            for j in range(len(rev)):
+                revrat.append(rev[j]['text'])
+                l=model.predict([rev[j]['text']])
+                count=count+l
+            Sentiment.append(count/5) 
+            review.append(revrat)
+            name.append(str(resp_address[i]['name']))
+            types.append (resp_address[i]['types'])
+            lat.append(resp_address[i]['geometry']['location']['lat'])
+            lng.append (resp_address[i]['geometry']['location']['lng'])
+            place_id_array.append(place_idd)
+            vicinity.append (resp_address[i]['vicinity'])    
+    session = Session()
+    try:
+        # Delete all existing entries
+        session.query(Person).delete()
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Failed to clear the table: {e}")
 
-                rat = place_details.get("rating")
-                rating.append(rat)
+    for j in range(len(resp_address)):
+        try:
+            person = Person(
+                name=str(name[j]),
+                Type=str(types[j]),
+                rating=str(rating[j]),
+                latitude=str(lat[j]),
+                longitude=str(lng[j]),
+                place_id=str(place_id_array[j]),
+                vicinity=str(vicinity[j]),
+                reviews=str(review[j]),
+                sentiment=str(Sentiment[j])
+            )
+            session.add(person)
+            session.commit()
 
-                rev=place_details.get("reviews", [])
-                revrat=[]
-                for j in range(len(rev)):
-                    revrat.append(rev[j]['text'])
-                    revrat.append('&&&&&')
-                review.append(revrat)
-                name.append(str(resp_address[i]['name']))
-                types.append (resp_address[i]['types'])
-                lat.append(resp_address[i]['geometry']['location']['lat'])
-                lng.append (resp_address[i]['geometry']['location']['lng'])
-                place_id_array.append(place_idd)
-                vicinity.append (resp_address[i]['vicinity'])
-    with open('cache_file.csv', 'w',encoding='utf-8') as myfile:
-        wr= csv.writer(myfile, quoting=csv.QUOTE_ALL)
-        heading = ["name","vicinity", "type",'latitude','longitude','rating','reviews','place_id','Sentiment Ratio']
-        wr.writerow(heading)
-        for i in range(len(types)):
-            wr.writerow([name[i],vicinity[i],types[i],lat[i],lng[i],rating[i],review[i],place_id_array[i]])
-    myfile.close()
-    write=pd.read_csv("cache_file.csv")
-    i=[]
-    for item in write['reviews']:    
-        listt=item.split('&&&&&')
-        count=0
-        for j in listt:
-            l=model.predict([j])
-            count=count+l
-        i.append(count/5) 
-    write.loc[:,'Sentiment Ratio']=i
-    write.to_csv("cache_file.csv", sep=',', encoding='utf-8')
-    arr=[]
-    with open("cache_file.csv", 'r',encoding='utf-8') as csvfile:
-        datareader = csv.reader(csvfile)
-        for row in datareader:
-            arr.append(row)
-    return render_template('index.html', prediction_text="{}".format(arr))
+        except Exception as e:
+            session.rollback()  # Roll back the transaction on error
+            print(f"Failed to insert data for index {j}: {e}")  # Print or log the error
+
+    # Close the session
+    session.close()
+    return render_template("index.html")
+    
 if (__name__=="__main__"):
     app.run(debug=True)
