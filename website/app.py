@@ -33,7 +33,7 @@ def Home():
     return render_template('index.html')
 @app.route("/",methods=["POST"])
 def predict():
-    friend_location=np.array([x for x in request.form.values()])
+    friend_location=np.array([x for x in request.form.values()][1:])
     pause = 0.1
     max_api_requests = 150000 
     api_requests_count = 0
@@ -110,6 +110,12 @@ def predict():
             count=count+l
         i.append(count/5) 
     write.loc[:,'Sentiment Ratio']=i
-    return render_template("index.html",prediction_text="the liked value is {}".format(write))
+    write.to_csv("cache_file.csv", sep=',', encoding='utf-8')
+    arr=[]
+    with open("cache_file.csv", 'r',encoding='utf-8') as csvfile:
+        datareader = csv.reader(csvfile)
+        for row in datareader:
+            arr.append(row)
+    return render_template("index.html",prediction_text="{}".format(arr))
 if (__name__=="__main__"):
     app.run(debug=True)

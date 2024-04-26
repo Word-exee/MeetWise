@@ -3,27 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meetup Location Recommender</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </style>
+    <script >
+        function addLocationInputs() {
+            var numberOfFriends = document.getElementById('numFriends').value;
+            var container = document.getElementById('locationInputs');
+            container.innerHTML = ''; // Clear previous inputs
+        
+            for (var i = 0; i < numberOfFriends; i++) {
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'friendLocation' + i;
+                input.placeholder = 'Location of Friend ' + (i + 1);
+                input.required = true;
+                container.appendChild(input);
+                container.appendChild(document.createElement('br'));
+            }
+        }
+        // Example array of arrays
+    
+        
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Meetup Location Recommender</h1>
-        <form id="locationForm",action="{{ url_for('predict')}}"method="post">
-            
-            <input type="text" name="Location1" placeholder="Location1" required="required" />
-            <input type="text" name="Location2" placeholder="Location2" required="required" />
-            <input type="text" name="Location3" placeholder="Location3" required="required" />
+        <form id="locationForm" action="{{ url_for('predict') }}" method="post">
+            <input type="number" id="numFriends" name="numFriends" placeholder="Number of Friends" min="1" max="10" required="required" oninput="addLocationInputs()" />
+            <div id="locationInputs">
+                <!-- Location inputs will be added here dynamically -->
+            </div>
             <div class="input-group">
                 <label for="meetingType">Type of Place:</label>
-                <input id="meetingType" name="meetingType">
+                <input id="meetingType" name="meetingType" required="required">
             </div>
             <button type="submit">Recommend Location</button>
         </form>
-        <div id="result">
-            {{ prediction_text }}
-        </div>
-    </div>
-
+        <div>{{prediction_text}}</div>
+        <table id="nestedArrayTable">
+            <thead>
+                <tr>
+                    <!-- Table headers will be dynamically created based on sub-array length -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be added here by JavaScript -->
+            </tbody>
+        </table>
+        
+        <script>  
+            async function generateTable() {  
+            try {  
+            const response = await fetch({{prediction_text}});
+            const data = await response.json();  
+            let table = '<table>';  
+            table += '<tr><th>Name</th><th>Email</th><th>Phone</th></tr>';  
+            data.forEach(item => {  
+            table += `<tr><td>${item.name}</td><td>${item.email}</td><td>${item.phone}</td></tr>`;  
+            });  
+            table += '</table>';  
+            consttableContainer = document.getElementById('table-container');  
+            tabletableContainer.innerHTML = table;  
+            } catch (error) {  
+            console.error(error);  
+            }  
+            }  
+              
+            generateTable();  
+            </script>  
+    
 </body>
 </html>
