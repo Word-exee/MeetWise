@@ -30,7 +30,7 @@
 <body>
     <div class="container">
         <h1>Meetup Location Recommender</h1>
-        <form id="locationForm" action="{{ url_for('predict') }}" method="post">
+        <form id="locationForm" action="http://127.0.0.1:5000" method="post">
             <input type="number" id="numFriends" name="numFriends" placeholder="Number of Friends" min="1" max="10" required="required" oninput="addLocationInputs()" />
             <div id="locationInputs">
                 <!-- Location inputs will be added here dynamically -->
@@ -42,37 +42,6 @@
             <button type="submit">Recommend Location</button>
         </form>
         <div>{{prediction_text}}</div>
-        <table id="nestedArrayTable">
-            <thead>
-                <tr>
-                    <!-- Table headers will be dynamically created based on sub-array length -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Table rows will be added here by JavaScript -->
-            </tbody>
-        </table>
-        
-        <script>  
-            async function generateTable() {  
-            try {  
-            const response = await fetch({{prediction_text}});
-            const data = await response.json();  
-            let table = '<table>';  
-            table += '<tr><th>Name</th><th>Email</th><th>Phone</th></tr>';  
-            data.forEach(item => {  
-            table += `<tr><td>${item.name}</td><td>${item.email}</td><td>${item.phone}</td></tr>`;  
-            });  
-            table += '</table>';  
-            consttableContainer = document.getElementById('table-container');  
-            tabletableContainer.innerHTML = table;  
-            } catch (error) {  
-            console.error(error);  
-            }  
-            }  
-              
-            generateTable();  
-            </script>  
     
 </body>
 </html>

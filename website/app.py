@@ -116,6 +116,6 @@ def predict():
         datareader = csv.reader(csvfile)
         for row in datareader:
             arr.append(row)
-    return render_template("index.html",prediction_text="{}".format(arr))
+    return render_template('index.html', prediction_text="{}".format(arr))
 if (__name__=="__main__"):
     app.run(debug=True)
