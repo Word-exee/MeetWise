@@ -61,7 +61,7 @@ def latlong(loc1):
     return current_lat, current_long
 #create flask app
 app= Flask(__name__)
-
+app.static_folder = 'static'
 #loading the pickle model
 model=pickle.load(open("model.pkl","rb"))
 
@@ -77,7 +77,7 @@ def predict():
     pp = pprint.PrettyPrinter(indent=4)
     # latlng="28.621271,77.061325"
     # radius=5
-    radius = 3000
+    radius = 5000
     current_lat=0
     current_long=0
     number_of_users=friend_location.size-1
@@ -168,4 +168,5 @@ def predict():
 
     
 if (__name__=="__main__"):
+
     app.run(debug=True)
