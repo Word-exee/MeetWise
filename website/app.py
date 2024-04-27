@@ -13,20 +13,21 @@ import pandas as pd
 import json,requests
 from sqlalchemy  import create_engine, ForeignKey,Column,String, String, CHAR,ARRAY,Float
 from sqlalchemy.ext.declarative import declarative_base
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 Base=declarative_base()
 class Person(Base):
     #defining basic structure of table
     __tablename__="Database"
-    name    =Column("name",String,primary_key=True)
-    vicinity=Column("Vicinity",String)
-    Type    =Column("Type",String)
-    latitude=Column("Latitude",String)
-    longitude=Column("Longitude",String)
-    rating=Column("rating",String)
-    reviews=Column("reviews",String)
-    place_id=Column("place_id",String)
-    sentiment=Column("Sentiment",String)
+    name        =Column("name",String,primary_key=True)
+    vicinity =Column("Vicinity",String ,nullable=True)
+    Type         =Column("Type",String ,nullable=True)
+    latitude =Column("Latitude",String ,nullable=True)
+    longitude=Column("Longitude",String,nullable=True)
+    rating    = Column("rating",String ,nullable=True)
+    reviews    =Column("reviews",String,nullable=True)
+    place_id  =Column("place_id",String,nullable=True)
+    sentiment=Column("Sentiment",String,nullable=True)
     #defining the basic structure of a classs
     def __init__(self,name,vicinity,Type,latitude,longitude,rating,reviews,place_id,sentiment):
         self.name=name
@@ -162,8 +163,9 @@ def predict():
             print(f"Failed to insert data for index {j}: {e}")  # Print or log the error
 
     # Close the session
-    session.close()
-    return render_template("index.html")
+    data = session.query(Person).all()
+    return render_template('index.html',allrecords=data)
+
     
 if (__name__=="__main__"):
     app.run(debug=True)
