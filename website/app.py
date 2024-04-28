@@ -127,7 +127,7 @@ def predict():
             types.append (resp_address[i]['types'])
             lat.append(resp_address[i]['geometry']['location']['lat'])
             lng.append (resp_address[i]['geometry']['location']['lng'])
-            place_id_array.append(place_idd)
+            place_id_array.append("https://www.google.com/maps/place/?q=place_id:"+place_idd)
             vicinity.append (resp_address[i]['vicinity'])    
     session = Session()
     try:
