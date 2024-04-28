@@ -6,10 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import pickle
 import numpy as np
-import pprint
 import time
-import csv
-import pandas as pd
 import json,requests
 from sqlalchemy  import create_engine, ForeignKey,Column,String, String, CHAR,ARRAY,Float
 from sqlalchemy.ext.declarative import declarative_base
@@ -74,7 +71,6 @@ def predict():
     pause = 0.1
     max_api_requests = 150000 
     api_requests_count = 0
-    pp = pprint.PrettyPrinter(indent=4)
     # latlng="28.621271,77.061325"
     # radius=5
     radius = 5000
@@ -125,7 +121,7 @@ def predict():
                 revrat.append(rev[j]['text'])
                 l=model.predict([rev[j]['text']])
                 count=count+l
-            Sentiment.append(count/5) 
+            Sentiment.append(count) 
             review.append(revrat)
             name.append(str(resp_address[i]['name']))
             types.append (resp_address[i]['types'])
@@ -161,10 +157,9 @@ def predict():
         except Exception as e:
             session.rollback()  # Roll back the transaction on error
             print(f"Failed to insert data for index {j}: {e}")  # Print or log the error
-
+    query_asc = session.query(Person).order_by(Person.sentiment.desc())
     # Close the session
-    data = session.query(Person).all()
-    return render_template('index.html',allrecords=data)
+    return render_template('index.html',allrecords=query_asc)
 
     
 if (__name__=="__main__"):

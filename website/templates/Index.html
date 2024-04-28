@@ -37,7 +37,7 @@
                 <!-- Location inputs will be added here dynamically -->
             </div>
             <div class="input-group">
-                <label for="meetingType">Type of Place:</label>
+                <label for="meetingType" >Type of Place:</label>
                 <input id="meetingType" name="meetingType" required="required">
             </div>
             <button type="submit">Recommend Location</button>
@@ -48,7 +48,6 @@
                 <th scope="col">Name</th>
                 <th scope="col">Vicinity</th>
                 <th scope="col">Rating</th>
-                <th scope="col">Reviews</th>
                 <th scope="col">Sentiment</th>
                 </tr>
             </thead>
@@ -59,11 +58,43 @@
                 <td>{{data.name}}</td>
                 <td>{{data.vicinity}}</td>
                 <td>{{data.rating}}</td>
-                <td>{{data.reviews}}</td>
-                <td>{{data.sentiment}}</td>
+                <td class="sentiment">{{data.sentiment}}</td>
                 </tr>    
                 {%endfor%}
             </tbody>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const sentimentCells = document.querySelectorAll('.sentiment');
+                    
+                    sentimentCells.forEach(cell => {
+                        let sentimentValue = cell.innerText.trim();
+                        let emoji = '';
+                        switch(sentimentValue) {
+
+                            case '[5]':
+                                emoji = '😊';
+                                break;
+                            case '[4]':
+                                emoji = '😀';
+                                break;
+                            case '[3]':
+                                emoji = '🙂';
+                                break;
+                            case '[2]':
+                                emoji = '😐';
+                                break;
+                            case '[1]':
+                                emoji = '☹';
+                                break;
+                            default:
+                                emoji = '😑'; // Unknown sentiment
+                        }
+                        cell.innerText = emoji;
+                    });
+                });
+                </script>
+                
         </table>
+    </div>
 </body>
 </html>
