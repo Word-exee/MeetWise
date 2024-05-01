@@ -7,26 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{{url_for('static',filename='CSS/style.css')}}"/>
     <title>document</title>
-    <script >
-        function addLocationInputs() {
-            var numberOfFriends = document.getElementById('numFriends').value;
-            var container = document.getElementById('locationInputs');
-            container.innerHTML = ''; // Clear previous inputs
-        
-            for (var i = 0; i < numberOfFriends; i++) {
-                var input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'friendLocation' + i;
-                input.placeholder = 'Location of Friend ' + (i + 1);
-                input.required = true;
-                container.appendChild(input);
-                container.appendChild(document.createElement('br'));
-            }
-        }
-        // Example array of arrays
-    
-        
-    </script>
+    <script src="{{url_for('static',filename='JS/script1.js')}}"></script>
 </head>
 <body>
     <div class="container">
@@ -62,37 +43,7 @@
                 </tr>    
                 {%endfor%}
             </tbody>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const sentimentCells = document.querySelectorAll('.sentiment');
-                    
-                    sentimentCells.forEach(cell => {
-                        let sentimentValue = cell.innerText.trim();
-                        let emoji = '';
-                        switch(sentimentValue) {
-
-                            case '[5]':
-                                emoji = '😊';
-                                break;
-                            case '[4]':
-                                emoji = '😀';
-                                break;
-                            case '[3]':
-                                emoji = '🙂';
-                                break;
-                            case '[2]':
-                                emoji = '😐';
-                                break;
-                            case '[1]':
-                                emoji = '☹';
-                                break;
-                            default:
-                                emoji = '😑'; // Unknown sentiment
-                        }
-                        cell.innerText = emoji;
-                    });
-                });
-                </script>
+            <script src="{{url_for('static',filename='JS/script2.js')}}"></script>
                 
         </table>
     </div>
