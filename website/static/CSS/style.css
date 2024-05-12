@@ -11,6 +11,10 @@ body {
     color: #333;
     padding: 20px;
     font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .container {
@@ -67,7 +71,12 @@ table {
     margin-top: 20px;
 }
 .sentiment {
-    font-size: 32px;  /* You can adjust this value as needed */
+    font-size: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+      /* You can adjust this value as needed */
 }
 table, th, td {
     border: 1px solid #ccc;
@@ -90,4 +99,3 @@ tbody tr:nth-child(odd) {
 .input-group {
     margin-bottom: 10px;
 }
-

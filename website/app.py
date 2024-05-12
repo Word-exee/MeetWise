@@ -106,12 +106,12 @@ def predict():
             params = {
             "place_id": place_idd,
             "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
-            "fields": "reviews"  # Request specific fields to minimize data usage
+            "fields": "reviews,rating"  # Request specific fields to minimize data usage
             }
             base_url = "https://maps.googleapis.com/maps/api/place/details/json"
             response = requests.get(base_url, params=params)
             place_details = response.json().get("result", {})
-            rat = place_details.get("rating",[])
+            rat = place_details.get("rating",None)
             rating.append(rat)
             
             count=0
