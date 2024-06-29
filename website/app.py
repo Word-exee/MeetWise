@@ -43,8 +43,8 @@ Base.metadata.create_all(bind=engine)#takes all the class and put them  in seper
 Session = sessionmaker(bind=engine)
 # Declaring API Keys Use
 # Declaring Global Variables Used
-places_api_web_service =  'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork'
-geocoding_api = 'AIzaSyA3cUamax65N5NLxuSF4EXuV6DGGMxDNXQ'
+places_api_web_service =  'ENTER API KEY'
+geocoding_api = 'ENTER API KEY'
 def latlong(loc1):
     current_loc = loc1.replace(" ", "+")
 
@@ -105,7 +105,7 @@ def predict():
             place_idd=resp_address[i]['place_id']
             params = {
             "place_id": place_idd,
-            "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
+            "key": 'ENTER API KEY',
             "fields": "reviews,rating"  # Request specific fields to minimize data usage
             }
             base_url = "https://maps.googleapis.com/maps/api/place/details/json"
