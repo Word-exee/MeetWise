@@ -13,6 +13,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 Base=declarative_base()
+class maps:
+  def __init__(self, name, latitude, longitude):
+    self.name = name
+    self.latitude = latitude
+    self.longitude = longitude
+
 class Person(Base):
     #defining basic structure of table
     __tablename__="Database"
@@ -43,8 +49,8 @@ Base.metadata.create_all(bind=engine)#takes all the class and put them  in seper
 Session = sessionmaker(bind=engine)
 # Declaring API Keys Use
 # Declaring Global Variables Used
-places_api_web_service =  'ENTER API KEY'
-geocoding_api = 'ENTER API KEY'
+places_api_web_service =  'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork'
+geocoding_api = 'AIzaSyA3cUamax65N5NLxuSF4EXuV6DGGMxDNXQ'
 def latlong(loc1):
     current_loc = loc1.replace(" ", "+")
 
@@ -160,8 +166,11 @@ def predict():
     query_asc = session.query(Person).order_by(Person.sentiment.desc())
     # Close the session
     return render_template('index.html',allrecords=query_asc)
-
-    
+# @app.route('/maps')
+# def maps():
+#     name,latitude,longitude = request.form['details']
+#     mapinstance = maps(name,latitude,longitude)
+#     return render_template('maps.html', details=mapinstance)
 if (__name__=="__main__"):
 
     app.run(debug=True)

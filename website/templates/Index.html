@@ -31,6 +31,7 @@
                 <th scope="col">Vicinity</th>
                 <th scope="col">Rating</th>
                 <th scope="col">Review Sentiment</th>
+                <th scope="col">Maps</th>
                 </tr>
             </thead>
                 
@@ -41,11 +42,11 @@
                 <td>{{data.vicinity}}</td>
                 <td>{{data.rating}}</td>
                 <td class="sentiment">{{data.sentiment}}</td>
+                <td><a href="/maps?details={{{data.latitude}},{{data.longitude}}}">Maps</a></td>
                 </tr>    
                 {%endfor%}
             </tbody>
             <script src="{{url_for('static',filename='JS/script2.js')}}"></script>
-                
         </table>
     </div>
 </body>
