@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/maps.css') }}">
     <title>MeetWise</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
@@ -31,7 +31,11 @@
     
         locations.forEach(function(location) {
             var marker = L.marker([location.lat, location.lng]).addTo(map);
-            marker.bindPopup(location.name);
+            marker.bindTooltip(location.name, { 
+                permanent: true,
+                direction: 'top', // You can set the direction to 'top', 'bottom', 'left', or 'right'
+                offset: L.point(0, -10) // Adjust the position of the tooltip relative to the marker
+            }).openTooltip();
             });
     </script>
 </body>

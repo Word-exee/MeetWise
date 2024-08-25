@@ -72,7 +72,7 @@ model=pickle.load(open("model.pkl","rb"))
 def Home():
     return render_template('index.html')
 @app.route("/",methods=["POST"])
-def predict():
+def result():
     friend_location=np.array([x for x in request.form.values()][1:])
     pause = 0.1
     max_api_requests = 150000 
@@ -168,7 +168,7 @@ def predict():
             print(f"Failed to insert data for index {j}: {e}")  # Print or log the error
     query_asc = session.query(Person).order_by(Person.sentiment.desc())
     # Close the session
-    return render_template('index.html',allrecords=query_asc)
+    return render_template('result.html',allrecords=query_asc)
 @app.route("/maps")
 def maps():
     # Example data for demonstration purposes
@@ -179,8 +179,7 @@ def maps():
         name, latitude, longitude = details.split(',')
         latitude = float(latitude)  # Convert string to float
         longitude = float(longitude)  # Convert string to float
-
-        # Packing data into a dictionary to pass to the template
+        # adding data into a  user location to pass to the template
     mapper.append(maplocation(name, latitude, longitude))
     # Render the maps.html template, passing the map_instance dictionary
     return render_template('maps.html', details=mapper)
