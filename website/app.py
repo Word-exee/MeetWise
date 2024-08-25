@@ -13,12 +13,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 Base=declarative_base()
-class maps:
-  def __init__(self, name, latitude, longitude):
-    self.name = name
-    self.latitude = latitude
-    self.longitude = longitude
-
 class Person(Base):
     #defining basic structure of table
     __tablename__="Database"
@@ -73,6 +67,7 @@ def Home():
     return render_template('index.html')
 @app.route("/",methods=["POST"])
 def predict():
+    global friend_location
     friend_location=np.array([x for x in request.form.values()][1:])
     pause = 0.1
     max_api_requests = 150000 
@@ -111,7 +106,7 @@ def predict():
             place_idd=resp_address[i]['place_id']
             params = {
             "place_id": place_idd,
-            "key": 'ENTER API KEY',
+            "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
             "fields": "reviews,rating"  # Request specific fields to minimize data usage
             }
             base_url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -166,11 +161,24 @@ def predict():
     query_asc = session.query(Person).order_by(Person.sentiment.desc())
     # Close the session
     return render_template('index.html',allrecords=query_asc)
-# @app.route('/maps')
-# def maps():
-#     name,latitude,longitude = request.form['details']
-#     mapinstance = maps(name,latitude,longitude)
-#     return render_template('maps.html', details=mapinstance)
+@app.route("/maps")
+def maps():
+    # Example data for demonstration purposes
+    details = request.args.get('details')
+    
+    if details:
+        # Split the details to get the name, latitude, and longitude
+        name, latitude, longitude = details.split(',')
+
+        # Packing data into a dictionary to pass to the template
+    map_instance = {
+        "name": name,
+        "latitude": latitude,
+        "longitude": longitude
+    }
+    
+    # Render the maps.html template, passing the map_instance dictionary
+    return render_template('maps.html', details=map_instance)
 if (__name__=="__main__"):
 
     app.run(debug=True)

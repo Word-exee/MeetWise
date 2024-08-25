@@ -1,33 +1,34 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <!-- Link to Bootstrap CSS for styling -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{url_for('static',filename='CSS/style.css')}}"/>
+    <!-- Link to external CSS; ensure the path is correct and the server is properly serving the CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
     <title>MeetWise</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
-    <h1>Welcome to MeetWise</h1>
-    <h4>Find the best places to meet your friends easily</h4>
-    <div id="map" style="height: 400px;"></div>
+    <h1>MeetWise</h1>
+    <!-- Map container with defined height -->
+    <div id="map" style="height: 600px; width:800px"></div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').fitBounds([
-            [51.5, -0.09],   // London
-            [52.5, -0.09], // Paris
-            [50.5, -0.09] // New York
-        ]);
-    
+        // Initialize the map on the "map" div with a given center and zoom level
+        var map = L.map('map').setView([{{details.latitude}}, {{details.longitude}}], 13);
+
+        // Add OpenStreetMap tiles to the map
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-    
-        var london = L.marker([{{details.latitude}} ,{{details.longitude}}).addTo(map).bindPopup({{details.name}});
-      // var paris = L.marker([48.8566, 2.3522]).addTo(map).bindPopup('Paris');
-        //var newYork = L.marker([40.7128, -74.0060]).addTo(map).bindPopup('New York') 
-        marker.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+        // Add a marker to the map at the same position
+        var marker = L.marker([{{details.latitude}}, {{details.longitude}}]).addTo(map);
+        marker.bindPopup("{{details.name}}").openPopup();
     </script>
 </body>
 </html>
