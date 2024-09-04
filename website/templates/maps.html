@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/maps.css') }}">
+    <title>MeetWise</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <h1>MeetWise</h1>
+    <div id="map" style="height: 600px; width:800px"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var locations = [
+            {% for detail in details %}
+            {
+                lat: {{ detail.latitude }},
+                lng: {{ detail.longitude }},
+                name: "{{ detail.name }}"
+            },
+            {% endfor %}
+        ];
+    
+        console.log(locations); // Debug: Output locations array to console
+        var map = L.map('map').setView([locations[locations.length-1].lat, locations[locations.length-1].lng], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+    
+        locations.forEach(function(location) {
+            var marker = L.marker([location.lat, location.lng]).addTo(map);
+            marker.bindTooltip(location.name, { 
+                permanent: true,
+                direction: 'top', // You can set the direction to 'top', 'bottom', 'left', or 'right'
+                offset: L.point(0, -10) // Adjust the position of the tooltip relative to the marker
+            }).openTooltip();
+            });
+    </script>
+</body>
+</html>

@@ -13,6 +13,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 Base=declarative_base()
+class maplocation:
+     # init method or constructor
+    def __init__(self, name, latitude, longitude):
+        self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
 class Person(Base):
     #defining basic structure of table
     __tablename__="Database"
@@ -43,8 +49,8 @@ Base.metadata.create_all(bind=engine)#takes all the class and put them  in seper
 Session = sessionmaker(bind=engine)
 # Declaring API Keys Use
 # Declaring Global Variables Used
-places_api_web_service =  'ENTER API KEY'
-geocoding_api = 'ENTER API KEY'
+places_api_web_service =  'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork'
+geocoding_api = 'AIzaSyA3cUamax65N5NLxuSF4EXuV6DGGMxDNXQ'
 def latlong(loc1):
     current_loc = loc1.replace(" ", "+")
 
@@ -66,7 +72,7 @@ model=pickle.load(open("model.pkl","rb"))
 def Home():
     return render_template('index.html')
 @app.route("/",methods=["POST"])
-def predict():
+def result():
     friend_location=np.array([x for x in request.form.values()][1:])
     pause = 0.1
     max_api_requests = 150000 
@@ -77,9 +83,12 @@ def predict():
     current_lat=0
     current_long=0
     number_of_users=friend_location.size-1
+    global User
+    User=[]
     typ=friend_location[number_of_users]
     for j in range(number_of_users):
         current_lat1,current_long1=latlong(friend_location[j])
+        User.append(maplocation(friend_location[j],current_lat1,current_long1))
         current_lat+=current_lat1
         current_long+=current_long1
     url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
@@ -105,7 +114,7 @@ def predict():
             place_idd=resp_address[i]['place_id']
             params = {
             "place_id": place_idd,
-            "key": 'ENTER API KEY',
+            "key": 'AIzaSyCztZNSls0oSkmLXe3FNjLilCA7xIp4Ork',
             "fields": "reviews,rating"  # Request specific fields to minimize data usage
             }
             base_url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -159,9 +168,21 @@ def predict():
             print(f"Failed to insert data for index {j}: {e}")  # Print or log the error
     query_asc = session.query(Person).order_by(Person.sentiment.desc())
     # Close the session
-    return render_template('index.html',allrecords=query_asc)
-
-    
+    return render_template('result.html',allrecords=query_asc)
+@app.route("/maps")
+def maps():
+    # Example data for demonstration purposes
+    details = request.args.get('details')
+    mapper=User
+    if details:
+        # Split the details to get the name, latitude, and longitude
+        name, latitude, longitude = details.split(',')
+        latitude = float(latitude)  # Convert string to float
+        longitude = float(longitude)  # Convert string to float
+        # adding data into a  user location to pass to the template
+    mapper.append(maplocation(name, latitude, longitude))
+    # Render the maps.html template, passing the map_instance dictionary
+    return render_template('maps.html', details=mapper)
 if (__name__=="__main__"):
 
     app.run(debug=True)

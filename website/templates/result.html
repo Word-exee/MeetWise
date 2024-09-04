@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='CSS/result.css')}}"/>
+    <title>MeetWise</title>
+    <script src="{{url_for('static',filename='JS/script1.js')}}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>MeetWise</h1>
+        <h4>Find the best places to meet your friends easily</h4>
+        <table id="dataTable" border="1">
+            <thead>
+                <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Review Sentiment</th>
+                <th scope="col">Maps</th>
+                </tr>
+            </thead>
+                
+            <tbody>
+                {%for data in allrecords%}
+                <tr>
+                <td><a href="{{data.place_id}}" target="_blank">{{data.name}}</a></td>
+                <td>{{data.vicinity}}</td>
+                <td>{{data.rating}}</td>
+                <td class="sentiment">{{data.sentiment}}</td>
+                <td><a href="/maps?details={{ data.name }},{{ data.latitude }},{{ data.longitude }}" target="_blank" rel="noopener noreferrer">View on Map</a></td>
+
+                </tr>    
+                {%endfor%}
+            </tbody>
+            <script src="{{url_for('static',filename='JS/script2.js')}}"></script>
+        </table>
+    </div>
+</body>
+</html>

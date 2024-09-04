@@ -12,6 +12,7 @@ function addLocationInputs() {
         container.appendChild(input);
         container.appendChild(document.createElement('br'));
     }
+    
 }
 // Example array of arrays
 
